@@ -1,47 +1,60 @@
 import { hasJSDocParameterTags } from "typescript";
 import { IGameState, cardValue, ICard } from "./gamestate";
-
-enum Hand {
-  HighCard,
-  Pair
-}
+import { Hand } from "./hands";
 
 function detectBestHand(hole_cards: ICard[], community_cards: ICard[]): Hand {
   var allCards = hole_cards.concat(community_cards);
 
   var res = allCards
     .sort((l, r) => cardValue(l) - cardValue(r))
-    .reduce((accu, v) => ({ last: cardValue(v), hasPair: accu.hasPair || accu.last === cardValue(v) }), { last: -1, hasPair: false });
+    .reduce(
+      (accu, v) => ({
+        last1: cardValue(v),
+        last2: accu.last1,
+        hasPair: accu.hasPair || accu.last1 === cardValue(v),
+        hasThreeOfAKind:
+          accu.hasThreeOfAKind ||
+          (accu.last1 === cardValue(v) && accu.last2 === cardValue(v)),
+      }),
+      { last1: -1, last2: -2, hasPair: false, hasThreeOfAKind: false }
+    );
 
-  return res.hasPair
-    ? Hand.Pair
-    : Hand.HighCard;
+  if (res.hasThreeOfAKind) {
+    return Hand.ThreeOfAKind;
+  } else if (res.hasPair) {
+    return Hand.Pair;
+  } else {
+    return Hand.HighCard;
+  }
 }
 
 export class Player {
-  public betRequest(gameState: IGameState, betCallback: (bet: number) => void): void {
+  public betRequest(
+    gameState: IGameState,
+    betCallback: (bet: number) => void
+  ): void {
     const me = gameState.players[gameState.in_action];
-    if(me.hole_cards && me.hole_cards.length === 2) {
-      if (detectBestHand(me.hole_cards, gameState.community_cards) === Hand.Pair) {
-        betCallback(Math.max(100, gameState.current_buy_in));
-        return;
-      }
+    if (me.hole_cards && me.hole_cards.length === 2) {
+      const bestHand = detectBestHand(me.hole_cards, gameState.community_cards);
 
-      const sum = cardValue(me.hole_cards[0]) + cardValue(me.hole_cards[1]);
-      if(sum > 11) {
-        betCallback(gameState.current_buy_in);
+      if (bestHand === Hand.ThreeOfAKind) {
+        betCallback(Math.max(300, gameState.current_buy_in));
+      } else if (bestHand === Hand.Pair) {
+        betCallback(Math.max(100, gameState.current_buy_in));
       } else {
-        betCallback(0);
+        const sum = cardValue(me.hole_cards[0]) + cardValue(me.hole_cards[1]);
+        if (sum > 11) {
+          betCallback(gameState.current_buy_in);
+        } else {
+          betCallback(0);
+        }
       }
-    } else {      
+    } else {
       betCallback(gameState.current_buy_in);
     }
   }
 
-  public showdown(gameState: IGameState): void {
-
-  }
-};
+  public showdown(gameState: IGameState): void {}
+}
 
 export default Player;
-  
