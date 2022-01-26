@@ -1,22 +1,8 @@
 import { IGameState, cardValue, ICard, Rank, Suit } from "./gamestate";
-import { Hand } from "./hands";
+import { Hand, PokerCard, PokerHand } from "./hands";
 
-class PokerCard implements ICard {
-  rank: Rank;
-  suit: Suit;
-  isHole: boolean
-  constructor(card: ICard, isHole: boolean) {
-    this.rank = card.rank;
-    this.suit = card.suit;
-    this.isHole = isHole;
-  }
-  holeCardNum(): number {
-    return this.isHole ? 1 : 0;
-  }
-}
-class PokerHand {
-  hand: Hand;
-  numHoleCards: number
+function holeCardSum(cards:PokerCard[]) {
+  return cards.reduce((accu, v) => v.holeCardNum() + accu, 0);
 }
 
 function detectBestHand(hole_cards: ICard[], community_cards: ICard[]): PokerHand {
@@ -40,6 +26,29 @@ function detectBestHand(hole_cards: ICard[], community_cards: ICard[]): PokerHan
     last1 = v;
   });
 
+  var cardsBySuit = allCards.reduce((accu, v) => {
+    if (typeof accu[v.suit] === 'undefined') {
+      accu[v.suit] = [];
+    }
+
+    accu[v.suit].push(v)
+
+    return accu;
+  }, { });
+
+  var flushes: PokerCard[][] = Object.keys(cardsBySuit).map(k => cardsBySuit[k]).filter(cards => cards.length >= 5);
+  if (flushes.length > 0) {
+    pokerHands.push({ hand: Hand.Flush, numHoleCards: holeCardSum(flushes[0]) });
+
+    const longestSeries = flushes[0].map(c => cardValue(c)).sort().reduce((accu, v) => {
+      var res = v - accu.last === 1 ? { series: [ ...accu.series, v ], last: v } : { series: [ v ], last: v };
+      return res;
+    }, { series: [], last: 0 }).series;
+    if (longestSeries.length >= 5) {
+      pokerHands.push({hand: Hand.StraightFlush, numHoleCards: holeCardSum(longestSeries) });
+    }
+  }
+
   console.error("Poker hands: ", pokerHands);
   pokerHands.sort((l,r) => 
     l.hand - r.hand
@@ -53,13 +62,13 @@ function detectBestHand(hole_cards: ICard[], community_cards: ICard[]): PokerHan
   }
   return pokerHands[pokerHands.length - 1];
 }
-
+  
 function bet(gameState: IGameState): number {
   const me = gameState.players[gameState.in_action];
   if (me.hole_cards && me.hole_cards.length === 2) {
     const bestHand = detectBestHand(me.hole_cards, gameState.community_cards);
     console.error("bestHand: ", bestHand);
-    if (bestHand.hand === Hand.ThreeOfAKind) {
+    if (bestHand.hand === Hand.ThreeOfAKind || bestHand.hand == Hand.Straight || bestHand.hand == Hand.Flush || bestHand.hand == Hand.StraightFlush) {
       console.error("RAISE min 300 because of 3 of a kind");
       return Math.max(300, gameState.current_buy_in);
     } else if (bestHand.hand === Hand.Pair) {

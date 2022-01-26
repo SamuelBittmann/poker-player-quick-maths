@@ -1,3 +1,4 @@
+import { ICard, Rank, Suit } from "./gamestate";
 export enum Hand {
   HighCard = 1,
   Pair = 2,
@@ -8,6 +9,24 @@ export enum Hand {
   FullHouse = 7,
   FourOfAKind = 8,
   StraightFlush = 9
+}
+
+export class PokerCard implements ICard {
+  rank: Rank;
+  suit: Suit;
+  isHole: boolean
+  constructor(card: ICard, isHole: boolean) {
+    this.rank = card.rank;
+    this.suit = card.suit;
+    this.isHole = isHole;
+  }
+  holeCardNum(): number {
+    return this.isHole ? 1 : 0;
+  }
+}
+export class PokerHand {
+  hand: Hand;
+  numHoleCards: number
 }
 
 export interface IHandProbability {
