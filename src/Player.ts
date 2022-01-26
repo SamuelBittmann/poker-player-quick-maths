@@ -2,7 +2,7 @@ import { IGameState, cardValue } from "./gamestate";
 
 export class Player {
   public betRequest(gameState: IGameState, betCallback: (bet: number) => void): void {
-    const me = gameState.players[gameState.in_action];
+    const me = gameState.players[6];
     if(me.hole_cards && me.hole_cards.length === 2) {
       const sum = cardValue(me.hole_cards[0]) + cardValue(me.hole_cards[1]);
       if(sum > 11) {
