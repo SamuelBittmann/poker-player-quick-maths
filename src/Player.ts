@@ -43,8 +43,13 @@ export class Player {
         betCallback(Math.max(100, gameState.current_buy_in));
       } else {
         const sum = cardValue(me.hole_cards[0]) + cardValue(me.hole_cards[1]);
-        if (sum > 11) {
-          betCallback(gameState.current_buy_in);
+        if (sum > 16) {
+          if(gameState.current_buy_in > me.stack * 0.5) {
+            betCallback(0);
+          }
+          else {
+            betCallback(gameState.current_buy_in);
+          }
         } else {
           betCallback(0);
         }
