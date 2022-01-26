@@ -66,7 +66,19 @@ function detectBestHand(hole_cards: ICard[], community_cards: ICard[]): PokerHan
   }
   return pokerHands[pokerHands.length - 1];
 }
-  
+ 
+function callOnHighCard(gameState: IGameState): number {
+  const me = gameState.players[gameState.in_action];
+  if(gameState.current_buy_in > me.stack * 0.5) {
+    console.error("FOLD! too rich for us");
+    return 0;
+  }
+  else {
+    console.error("CALL because of high cards");
+    return gameState.current_buy_in;
+  }
+}
+
 function bet(gameState: IGameState): number {
   const me = gameState.players[gameState.in_action];
   if (me.hole_cards && me.hole_cards.length === 2) {
@@ -81,17 +93,15 @@ function bet(gameState: IGameState): number {
     } else {
       const sum = cardValue(me.hole_cards[0]) + cardValue(me.hole_cards[1]);
       if (sum > 16) {
-        if(gameState.current_buy_in > me.stack * 0.5) {
-          console.error("FOLD! too rich for us");
+        return callOnHighCard(gameState);
+      } else {
+        if(gameState.community_cards.length < 3) {
+          // stay in the game at least until community cards are dealt
+          return callOnHighCard(gameState);
+        } else {
+          console.error("FOLD because of low cards");
           return 0;
         }
-        else {
-          console.error("CALL because of high cards");
-          return gameState.current_buy_in;
-        }
-      } else {
-        console.error("FOLD because of low cards");
-        return 0;
       }
     }
   } else {
