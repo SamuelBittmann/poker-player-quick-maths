@@ -1,21 +1,34 @@
 {
-    "name": "poker-player-typescript",
-    "description": "TypeScript player from lean poker. http://leanpoker.org",
-    "version": "0.0.1",
-    "private": true,
-    "scripts": {
-        "postinstall": "npm run build",
-        "start": "node out/index.js",
-        "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./"
+  "name": "poker-player-typescript",
+  "description": "TypeScript player from lean poker. http://leanpoker.org",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm run build",
+    "start": "node out/index.js",
+    "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./"
+  },
+  "dependencies": {
+    "express": "^4.17.2",
+    "body-parser": "^1.19.1",
+    "typings": "latest",
+    "typescript": "^4.5.4"
+  },
+  "engines": {
+    "node": "17.1.0",
+    "npm": "6.14.8"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
     },
-    "dependencies": {
-        "express": "^4.17.2",
-        "body-parser": "^1.19.1",
-        "typings": "latest",
-        "typescript": "^4.5.4"
-    },
-    "engines": {
-        "node": "17.1.0",
-        "npm": "6.14.8"
-    }
+    "testMatch": [
+      "**/__tests__/*.(ts|tsx)"
+    ]
+  }
 }
