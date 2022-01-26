@@ -1,6 +1,6 @@
 export class Player {
   public betRequest(gameState: any, betCallback: (bet: number) => void): void {
-    betCallback(0);
+    betCallback(10);
   }
 
   public showdown(gameState: any): void {
@@ -9,3 +9,4 @@ export class Player {
 };
 
 export default Player;
+  
