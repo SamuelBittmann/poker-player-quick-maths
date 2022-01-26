@@ -6,16 +6,17 @@
   "scripts": {
     "postinstall": "npm run build",
     "start": "node out/index.js",
-    "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./",
-    "test": "npm run jest"
+    "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./"
   },
   "dependencies": {
-    "@types/jest": "27.4.0",
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
-    "jest": "27.4.7",
     "typescript": "^4.5.4",
     "typings": "latest"
+  },
+  "devDependencies": {
+    "jest": "27.4.7",
+    "@types/jest": "27.4.0"
   },
   "engines": {
     "node": "17.1.0",
