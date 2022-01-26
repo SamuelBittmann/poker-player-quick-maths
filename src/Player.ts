@@ -10,6 +10,25 @@ function detectBestHand(hole_cards: ICard[], community_cards: ICard[]): PokerHan
   const allCards = hole_cards.map(c => new PokerCard(c, true) ).concat(community_cards.map(c => new PokerCard(c, false) ));
 
   let pokerHands: PokerHand[] = [];
+
+  const byRankValue: PokerCard[][] = [];
+    allCards.forEach(c => {
+        const value = cardValue(c);
+        let rankList = byRankValue[value];
+        if(rankList === undefined) {
+            byRankValue[value] = [];
+            rankList = byRankValue[value];
+        }
+
+        rankList.push(c);
+    });
+
+  var pairs = byRankValue.filter((cards, cardValue) => cards.length > 1).map((cards, cardValue) => holeCardSum(cards)).sort();
+  if (pairs.length > 1) {
+    pokerHands.push({ hand: Hand.TwoPairs, numHoleCards: pairs[0] + pairs[1] });
+  }
+
+
   let last1 : PokerCard | null = null
   let last2 : PokerCard | null = null
   allCards.sort((l, r) => cardValue(l) - cardValue(r));
@@ -84,7 +103,7 @@ function bet(gameState: IGameState): number {
   if (me.hole_cards && me.hole_cards.length === 2) {
     const bestHand = detectBestHand(me.hole_cards, gameState.community_cards);
     console.error("bestHand: ", bestHand);
-    if (bestHand.hand === Hand.ThreeOfAKind || bestHand.hand == Hand.Straight || bestHand.hand == Hand.Flush || bestHand.hand == Hand.StraightFlush) {
+    if (bestHand.hand === Hand.ThreeOfAKind || bestHand.hand == Hand.Straight || bestHand.hand == Hand.Flush || bestHand.hand == Hand.StraightFlush || bestHand.hand == Hand.TwoPairs) {
       console.error("RAISE min 300 because of 3 of a kind");
       return Math.max(300, gameState.current_buy_in);
     } else if (bestHand.hand === Hand.Pair) {
