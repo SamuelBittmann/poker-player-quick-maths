@@ -29,13 +29,16 @@ export interface ICard {
     suit: Suit;
 }
 
-type Rank = "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "J" | "Q" | "K" | "A";
-type Suit = "spades" | "clubs" | "hearts" | "diamonds";
-type PlayerIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type Rank = "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "J" | "Q" | "K" | "A";
+export type Suit = "spades" | "clubs" | "hearts" | "diamonds";
+export type PlayerIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-type PlayerStatus = "active" | "folded" | "out";
+export type PlayerStatus = "active" | "folded" | "out";
 
-export function cardValue(card: ICard): number {
+export function cardValue(card: ICard | null): number {
+    if(card == null) {
+        return 0;
+    }
     return {
         "2": 2,
         "3": 3,
