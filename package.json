@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "npm run build",
     "start": "node out/index.js",
-    "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./",
+    "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./"
   },
   "dependencies": {
     "@types/jest": "27.4.0",
