@@ -35,6 +35,24 @@ type PlayerIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 type PlayerStatus = "active" | "folded" | "out";
 
+export function cardValue(card: ICard): number {
+    return {
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "7": 7,
+        "8": 8,
+        "9": 9,
+        "10": 10,
+        "J": 11,
+        "Q": 12,
+        "K": 13,
+        "A": 14,
+    }[card.rank];
+}
+
 /* 
 {
   "tournament_id":"550d1d68cd7bd10003000003",     // Id of the current tournament
