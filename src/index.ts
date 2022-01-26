@@ -3,7 +3,8 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { Player } from './Player';
 
-const VERSION = "Default TypeScript folding player";
+const start = new Date();
+const VERSION = `Quick Math: ${start.getHours()}:${start.getMinutes()}`;
 
 const app = express();
 const player = new Player();
