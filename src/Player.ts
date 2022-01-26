@@ -1,5 +1,6 @@
 import { IGameState, cardValue, ICard, Rank, Suit } from "./gamestate";
 import { Hand, PokerCard, PokerHand } from "./hands";
+import { detectStraights } from "./straight";
 
 function holeCardSum(cards:PokerCard[]) {
   return cards.reduce((accu, v) => v.holeCardNum() + accu, 0);
@@ -48,6 +49,9 @@ function detectBestHand(hole_cards: ICard[], community_cards: ICard[]): PokerHan
       pokerHands.push({hand: Hand.StraightFlush, numHoleCards: holeCardSum(longestSeries) });
     }
   }
+
+  const straightHands = detectStraights(allCards);
+  straightHands.forEach(h => pokerHands.push(h));
 
   console.error("Poker hands: ", pokerHands);
   pokerHands.sort((l,r) => 
