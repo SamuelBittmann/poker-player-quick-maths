@@ -6,13 +6,16 @@
   "scripts": {
     "postinstall": "npm run build",
     "start": "node out/index.js",
-    "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./"
+    "build": "./node_modules/.bin/typings i && ./node_modules/.bin/tsc -p ./",
+    "test": "npm run jest"
   },
   "dependencies": {
-    "express": "^4.17.2",
+    "@types/jest": "27.4.0",
     "body-parser": "^1.19.1",
-    "typings": "latest",
-    "typescript": "^4.5.4"
+    "express": "^4.17.2",
+    "jest": "27.4.7",
+    "typescript": "^4.5.4",
+    "typings": "latest"
   },
   "engines": {
     "node": "17.1.0",
@@ -28,7 +31,7 @@
       "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
     },
     "testMatch": [
-      "**/__tests__/*.(ts|tsx)"
+      "**/__tests__/*.test.(ts|tsx)"
     ]
   }
 }
