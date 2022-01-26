@@ -1,6 +1,8 @@
+import { IGameState } from "./gamestate";
+
 export class Player {
-  public betRequest(gameState: any, betCallback: (bet: number) => void): void {
-    betCallback(10);
+  public betRequest(gameState: IGameState, betCallback: (bet: number) => void): void {
+    betCallback(gameState.current_buy_in);
   }
 
   public showdown(gameState: any): void {
