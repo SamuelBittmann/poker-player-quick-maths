@@ -10,7 +10,7 @@ export interface IGameState {
     dealer: PlayerIndex;
     orbits: number;
     in_action: PlayerIndex;
-    player: IPlayer[];
+    players: IPlayer[];
     community_cards: ICard[];
 }
 
