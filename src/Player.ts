@@ -55,8 +55,14 @@ export class Player {
             betCallback(gameState.current_buy_in);
           }
         } else {
-          console.error("FOLD because of low cards")
-          betCallback(0);
+          // we only have individual cards right now
+          if(gameState.community_cards.length >= 3) {              
+            console.error("FOLD because of low cards");
+            betCallback(0);
+          } else {
+            console.error("CALL because we have not yet seen the RIVER!");
+            betCallback(gameState.current_buy_in);
+          }
         }
       }
     } else {
